@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.hunter.domain.dto.UpdateUserDto;
 import com.project.hunter.domain.dto.UserDto;
 import com.project.hunter.domain.entities.UserEntity;
+import com.project.hunter.exceptions.IdInvalidException;
 import com.project.hunter.services.UserService;
+import com.project.hunter.utils.UUIDChecker;
 
 @RestController()
 @RequestMapping("users")
@@ -41,20 +43,34 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserDetailsApi(@PathVariable("id") UUID id) {
-        UserDto userDto = this.userService.handleGetUserById(id);
-        return ResponseEntity.status(200).body(userDto);
+    public ResponseEntity<UserDto> getUserDetailsApi(@PathVariable("id") String id)
+            throws IdInvalidException {
+        if (!UUIDChecker.isValidUUID(id)) {
+            throw new IdInvalidException("UUID is invalid");
+        }
+        UUID uuid = UUID.fromString(id);
+        UserDto userDto = this.userService.handleGetUserById(uuid);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUserApi(@PathVariable("id") UUID id, @RequestBody UpdateUserDto updateUserDto) {
-        UserDto userDto = this.userService.handleUpdateUserById(id, updateUserDto);
+    public ResponseEntity<UserDto> updateUserApi(@PathVariable("id") String id, @RequestBody UpdateUserDto updateUserDto)
+            throws IdInvalidException {
+        if (!UUIDChecker.isValidUUID(id)) {
+            throw new IdInvalidException("UUID is invalid");
+        }
+        UUID uuid = UUID.fromString(id);
+        UserDto userDto = this.userService.handleUpdateUserById(uuid, updateUserDto);
         return ResponseEntity.status(200).body(userDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserDto> deleteUserApi(@PathVariable("id") UUID id) {
-        UserDto userDto = this.userService.handleDeleteUserById(id);
-        return ResponseEntity.status(200).body(userDto);
+    public ResponseEntity<UserDto> deleteUserApi(@PathVariable("id") String id) throws IdInvalidException {
+        if (!UUIDChecker.isValidUUID(id)) {
+            throw new IdInvalidException("UUID is invalid");
+        }
+        UUID uuid = UUID.fromString(id);
+        UserDto userDto = this.userService.handleDeleteUserById(uuid);
+        return ResponseEntity.ok().body(userDto);
     }
 }
