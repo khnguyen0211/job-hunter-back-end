@@ -1,12 +1,19 @@
 package com.project.hunter.controllers;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.hunter.domain.dto.UserDto;
 import com.project.hunter.domain.entities.UserEntity;
 import com.project.hunter.services.UserService;
 
-@RestController
+@RestController()
 public class UserController {
 
     private final UserService userService;
@@ -15,14 +22,19 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("users/create")
-    public UserEntity createUserAPI() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setFullName("Admin");
-        userEntity.setEmail("admin@gmail.com");
-        userEntity.setPassword("admin");
-        userEntity.setAddress("HCM City VN");
+    @PostMapping("users")
+    public UserDto createUserAPI(@RequestBody UserEntity userEntity) {
         return this.userService.handleSaveUser(userEntity);
+    }
+
+    @GetMapping("users")
+    public List<UserDto> getAllUsersApi() {
+        return this.userService.handleGetAllUser();
+    }
+
+    @GetMapping("users/{id}")
+    public UserDto getUserDetailsApi(@PathVariable("id") UUID id) {
+        return this.userService.handleGetUserById(id);
     }
 
 }
