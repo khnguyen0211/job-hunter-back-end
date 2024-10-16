@@ -3,7 +3,6 @@ package com.project.hunter.domain.entities;
 import java.time.Instant;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,8 +13,7 @@ import jakarta.persistence.Table;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(columnDefinition = "BINARY(16)")
+    @GeneratedValue
     private UUID id;
     private String fullName;
     private String email;
@@ -123,6 +121,14 @@ public class UserEntity {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity [id=" + id + ", fullName=" + fullName + ", email=" + email + ", password=" + password
+                + ", address=" + address + ", phoneNumber=" + phoneNumber + ", createdAt=" + createdAt + ", createdBy="
+                + createdBy + ", updatedAt=" + updatedAt + ", updatedBy=" + updatedBy + ", deletedAt=" + deletedAt
+                + ", deletedBy=" + deletedBy + "]";
     }
 
 }

@@ -1,5 +1,6 @@
 package com.project.hunter.services;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.project.hunter.domain.dto.UpdateUserDto;
 import com.project.hunter.domain.dto.UserDto;
 import com.project.hunter.domain.entities.UserEntity;
 import com.project.hunter.repositories.UserRepository;
@@ -21,6 +23,10 @@ public class UserService {
     }
 
     public UserDto handleSaveUser(UserEntity userEntity) {
+        UserDto userDto = this.handleGetUserByEmail(userEntity.getEmail());
+        if(userDto != null) {
+            return null;
+        }
         UserEntity insertedUserEntity = this.userRepository.save(userEntity);
         return new UserDto(insertedUserEntity);
     }
@@ -34,6 +40,40 @@ public class UserService {
         Optional<UserEntity> optionalUser = this.userRepository.findById(id);
         if (optionalUser.isPresent()) {
             return new UserDto(optionalUser.get());
+        }
+        return null;
+    }
+
+    public UserDto handleUpdateUserById(UUID id, UpdateUserDto updateUserDto) {
+        Optional<UserEntity> optionalUser = this.userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            UserEntity userEntity = optionalUser.get();
+            userEntity.setFullName(updateUserDto.getFullName());
+            userEntity.setPhoneNumber(updateUserDto.getPhoneNumber());
+            userEntity.setAddress(updateUserDto.getAddress());
+            userEntity.setUpdatedAt(Instant.now());
+            this.userRepository.save(userEntity);
+            return new UserDto(userEntity);
+        }
+        return null;
+    } 
+
+    public UserDto handleDeleteUserById(UUID id) {
+        Optional<UserEntity> optionalUser = this.userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            UserEntity userEntity = optionalUser.get();
+            userEntity.setDeletedAt(Instant.now());
+            this.userRepository.save(userEntity);
+            return new UserDto(userEntity);
+        }
+        return null;
+    }
+
+    public UserDto handleGetUserByEmail(String email) {
+        List<UserEntity> userEntities = this.userRepository.findByEmail(email);
+        if(userEntities != null && !userEntities.isEmpty()) {
+            UserEntity userEntity = userEntities.get(0);
+            return new UserDto(userEntity);
         }
         return null;
     }
