@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.project.hunter.constants.RoleConstant;
 import com.project.hunter.domain.entities.UserEntity;
 
 @Service
@@ -23,12 +24,10 @@ public class UserDetailsCustomService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = this.userService.handleGetUserLoginByEmail(username);
-        if (userEntity != null) {
-            return new User(
-                    userEntity.getEmail(),
-                    userEntity.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("USER")));
+        if (userEntity == null) {
+            throw new UsernameNotFoundException("Username/Password is not valid");
         }
-        return null;
+        return new User(userEntity.getEmail(), userEntity.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(RoleConstant.ROLE_USER)));
     }
 }

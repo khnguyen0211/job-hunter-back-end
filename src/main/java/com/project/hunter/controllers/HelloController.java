@@ -10,6 +10,6 @@ public class HelloController {
     @GetMapping()
     public ResponseEntity<Object> getLicenseApi() {
         String license = "Copyright © 2024 KhNguyen0211. All rights reserved.";
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(license);
     }
 }

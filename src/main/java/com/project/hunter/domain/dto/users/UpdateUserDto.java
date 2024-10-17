@@ -1,4 +1,4 @@
-package com.project.hunter.domain.dto;
+package com.project.hunter.domain.dto.users;
 
 public class UpdateUserDto {
     private String fullName;

@@ -1,4 +1,4 @@
-package com.project.hunter.domain.dto;
+package com.project.hunter.domain.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.project.hunter.domain.dto.UpdateUserDto;
-import com.project.hunter.domain.dto.UserDto;
+import com.project.hunter.domain.dto.users.UpdateUserDto;
+import com.project.hunter.domain.dto.users.UserDto;
 import com.project.hunter.domain.entities.UserEntity;
 import com.project.hunter.repositories.UserRepository;
 

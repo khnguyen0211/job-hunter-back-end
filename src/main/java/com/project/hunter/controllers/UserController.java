@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.hunter.domain.dto.UpdateUserDto;
-import com.project.hunter.domain.dto.UserDto;
+import com.project.hunter.domain.dto.users.UpdateUserDto;
+import com.project.hunter.domain.dto.users.UserDto;
 import com.project.hunter.domain.entities.UserEntity;
 import com.project.hunter.exceptions.IdInvalidException;
 import com.project.hunter.services.UserService;
