@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,13 +26,16 @@ import com.project.hunter.utils.UUIDChecker;
 public class UserController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping()
     public ResponseEntity<UserDto> createUserAPI(@RequestBody UserEntity userEntity) {
+        userEntity.setPassword(this.passwordEncoder.encode(userEntity.getPassword()));
         UserDto userDto = this.userService.handleSaveUser(userEntity);
         return ResponseEntity.status(201).body(userDto);
     }

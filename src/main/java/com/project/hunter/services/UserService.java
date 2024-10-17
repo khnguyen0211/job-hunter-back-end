@@ -24,7 +24,7 @@ public class UserService {
 
     public UserDto handleSaveUser(UserEntity userEntity) {
         UserDto userDto = this.handleGetUserByEmail(userEntity.getEmail());
-        if(userDto != null) {
+        if (userDto != null) {
             return null;
         }
         UserEntity insertedUserEntity = this.userRepository.save(userEntity);
@@ -33,7 +33,8 @@ public class UserService {
 
     public List<UserDto> handleGetAllUser() {
         List<UserEntity> userEntities = this.userRepository.findAll();
-        return userEntities.stream().map(userEntity -> new UserDto(userEntity)).collect(Collectors.toList());
+        return userEntities.stream().map(userEntity -> new UserDto(userEntity))
+                .collect(Collectors.toList());
     }
 
     public UserDto handleGetUserById(UUID id) {
@@ -56,7 +57,7 @@ public class UserService {
             return new UserDto(userEntity);
         }
         return null;
-    } 
+    }
 
     public UserDto handleDeleteUserById(UUID id) {
         Optional<UserEntity> optionalUser = this.userRepository.findById(id);
@@ -71,9 +72,18 @@ public class UserService {
 
     public UserDto handleGetUserByEmail(String email) {
         List<UserEntity> userEntities = this.userRepository.findByEmail(email);
-        if(userEntities != null && !userEntities.isEmpty()) {
+        if (userEntities != null && !userEntities.isEmpty()) {
             UserEntity userEntity = userEntities.get(0);
             return new UserDto(userEntity);
+        }
+        return null;
+    }
+
+    public UserEntity handleGetUserLoginByEmail(String email) {
+        List<UserEntity> userEntities = this.userRepository.findByEmail(email);
+        if (userEntities != null && !userEntities.isEmpty()) {
+            UserEntity userEntity = userEntities.get(0);
+            return userEntity;
         }
         return null;
     }
