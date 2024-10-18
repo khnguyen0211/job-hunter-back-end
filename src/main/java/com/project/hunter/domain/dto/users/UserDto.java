@@ -3,11 +3,13 @@ package com.project.hunter.domain.dto.users;
 
 import java.util.UUID;
 
+import com.project.hunter.constants.GenderEnum;
 import com.project.hunter.domain.entities.UserEntity;
 
 public class UserDto {
     private UUID id;
     private String fullName;
+    private GenderEnum gender;
     private String email;
     private String address;
     private String phoneNumber;
@@ -15,6 +17,7 @@ public class UserDto {
     public UserDto(UserEntity userEntity) {
         this.id = userEntity.getId();
         this.fullName = userEntity.getFullName();
+        this.gender = userEntity.getGender();
         this.email = userEntity.getEmail();
         this.address = userEntity.getAddress();
         this.phoneNumber = userEntity.getPhoneNumber();
@@ -58,5 +61,13 @@ public class UserDto {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public GenderEnum getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderEnum gender) {
+        this.gender = gender;
     }
 }

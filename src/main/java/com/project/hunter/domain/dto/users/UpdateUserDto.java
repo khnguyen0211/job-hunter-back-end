@@ -1,9 +1,12 @@
 package com.project.hunter.domain.dto.users;
 
+import com.project.hunter.constants.GenderEnum;
+
 public class UpdateUserDto {
     private String fullName;
     private String phoneNumber;
     private String address;
+    private GenderEnum gender;
     
     public String getFullName() {
         return fullName;
@@ -22,6 +25,12 @@ public class UpdateUserDto {
     }
     public void setAddress(String address) {
         this.address = address;
+    }
+    public GenderEnum getGender() {
+        return gender;
+    }
+    public void setGender(GenderEnum gender) {
+        this.gender = gender;
     }
     
 }
