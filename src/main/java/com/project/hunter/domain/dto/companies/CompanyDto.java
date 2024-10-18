@@ -1,14 +1,18 @@
 package com.project.hunter.domain.dto.companies;
 
+import java.util.UUID;
+
 import com.project.hunter.domain.entities.CompanyEntity;
 
 public class CompanyDto {
+    private UUID id;
     private String name;
     private String description;
     private String logo;
     private String address;
 
     public CompanyDto(CompanyEntity companyEntity) {
+        this.id = companyEntity.getId();
         this.name = companyEntity.getName();
         this.description = companyEntity.getDescription();
         this.logo = companyEntity.getLogo();
@@ -45,6 +49,14 @@ public class CompanyDto {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     
