@@ -1,5 +1,8 @@
 package com.project.hunter.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.project.hunter.domain.dto.companies.CompanyDto;
@@ -23,4 +26,11 @@ public class CompanyService {
         companyEntity.setAddress(createCompanyDto.getAddress());
         return new CompanyDto(this.companyRepository.save(companyEntity));
     }
+
+    public List<CompanyDto> handleGetAllCompany() {
+        List<CompanyEntity> companyEntities = this.companyRepository.findAll();
+        return companyEntities.stream().map(companyEntity -> new CompanyDto(companyEntity))
+                .collect(Collectors.toList());
+    }
+
 }
