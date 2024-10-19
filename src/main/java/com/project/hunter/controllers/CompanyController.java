@@ -1,6 +1,7 @@
 package com.project.hunter.controllers;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.hunter.domain.dto.companies.CompanyDto;
 import com.project.hunter.domain.dto.companies.CreateCompanyDto;
 import com.project.hunter.domain.dto.pagination.PageResult;
+import com.project.hunter.domain.entities.CompanyEntity;
 import com.project.hunter.services.CompanyService;
+import com.turkraft.springfilter.boot.Filter;
 
 
 
@@ -34,10 +37,10 @@ public class CompanyController {
     }
 
     @GetMapping()
-    public ResponseEntity<PageResult<CompanyDto>> getAllCompanyApi(Pageable pageable) {
+    public ResponseEntity<PageResult<CompanyDto>> getAllCompanyApi(
+            @Filter Specification<CompanyEntity> spec, Pageable pageable) {
         PageResult<CompanyDto> pageResultCompanies =
-                this.companyService.handleGetAllCompany(pageable);
-        System.out.println("pageable: " + pageable);
+                this.companyService.handleGetAllCompany(spec, pageable);
         return ResponseEntity.ok().body(pageResultCompanies);
     }
 

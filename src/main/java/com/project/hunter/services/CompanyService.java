@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.project.hunter.domain.dto.companies.CompanyDto;
@@ -31,8 +32,9 @@ public class CompanyService {
         return new CompanyDto(this.companyRepository.save(companyEntity));
     }
 
-    public PageResult<CompanyDto> handleGetAllCompany(Pageable pageable) {
-        Page<CompanyEntity> pageCompany = this.companyRepository.findAll(pageable);
+    public PageResult<CompanyDto> handleGetAllCompany(Specification<CompanyEntity> spec,
+            Pageable pageable) {
+        Page<CompanyEntity> pageCompany = this.companyRepository.findAll(spec, pageable);
         MetaData meta = new MetaData(pageCompany.getNumber() + 1, pageCompany.getSize(),
                 pageCompany.getTotalPages(), pageCompany.getTotalElements());
         List<CompanyDto> companyDtoList = pageCompany.getContent().stream()
