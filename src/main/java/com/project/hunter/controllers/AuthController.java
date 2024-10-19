@@ -40,8 +40,8 @@ public class AuthController {
         Authentication authentication =
                 authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         String accessToken = this.authService.createToken(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDto userDto = this.userService.handleGetUserByEmail(loginDto.getUsername());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         LoginResponseDto loginResponseDto = new LoginResponseDto(userDto, accessToken);
         return ResponseEntity.ok().body(loginResponseDto);
     }
