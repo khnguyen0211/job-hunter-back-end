@@ -18,6 +18,7 @@ import com.project.hunter.domain.dto.users.UpdateUserDto;
 import com.project.hunter.domain.dto.users.UserDto;
 import com.project.hunter.domain.entities.UserEntity;
 import com.project.hunter.exceptions.IdInvalidException;
+import com.project.hunter.exceptions.NotFoundException;
 import com.project.hunter.services.UserService;
 import com.project.hunter.utils.UUIDChecker;
 
@@ -59,9 +60,9 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUserApi(@PathVariable("id") String id, @RequestBody UpdateUserDto updateUserDto)
-            throws IdInvalidException {
+            throws IdInvalidException, NotFoundException {
         if (!UUIDChecker.isValidUUID(id)) {
-            throw new IdInvalidException("UUID is invalid");
+            throw new IdInvalidException("UserId must be UUID format");
         }
         UUID uuid = UUID.fromString(id);
         UserDto userDto = this.userService.handleUpdateUserById(uuid, updateUserDto);

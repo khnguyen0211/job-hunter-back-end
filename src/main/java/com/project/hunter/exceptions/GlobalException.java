@@ -18,7 +18,9 @@ import com.project.hunter.domain.dto.RestResponse;
 @RestControllerAdvice
 public class GlobalException {
 
-    @ExceptionHandler(value = {UsernameNotFoundException.class, BadCredentialsException.class})
+    @ExceptionHandler(value = {
+        UsernameNotFoundException.class, 
+        BadCredentialsException.class})
     public ResponseEntity<RestResponse<Object>> handleJwtException(Exception exception) {
         RestResponse<Object> response =
                 new RestResponse<>(400, "Call API Failed", null, exception.getMessage());
@@ -39,6 +41,14 @@ public class GlobalException {
         RestResponse<List<String>> restResponseError =
                 new RestResponse<>(400, "Invalid Error", null, errorMessages);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restResponseError);
+    }
+
+    @ExceptionHandler(value = {IdInvalidException.class, com.project.hunter.exceptions.NotFoundException.class})
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
+            Exception e) {
+        RestResponse<Object> response =
+                new RestResponse<>(400, "Call API Failed", null, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 }
