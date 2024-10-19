@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.project.hunter.domain.dto.users.UpdateUserDto;
 import com.project.hunter.domain.dto.users.UserDto;
 import com.project.hunter.domain.entities.UserEntity;
+import com.project.hunter.exceptions.NotFoundException;
 import com.project.hunter.repositories.UserRepository;
 
 @Service
@@ -45,18 +46,18 @@ public class UserService {
         return null;
     }
 
-    public UserDto handleUpdateUserById(UUID id, UpdateUserDto updateUserDto) {
+    public UserDto handleUpdateUserById(UUID id, UpdateUserDto updateUserDto) throws NotFoundException{
         Optional<UserEntity> optionalUser = this.userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            UserEntity userEntity = optionalUser.get();
-            userEntity.setFullName(updateUserDto.getFullName());
-            userEntity.setPhoneNumber(updateUserDto.getPhoneNumber());
-            userEntity.setAddress(updateUserDto.getAddress());
-            userEntity.setUpdatedAt(Instant.now());
-            this.userRepository.save(userEntity);
-            return new UserDto(userEntity);
+        if (!optionalUser.isPresent()) {
+            throw new NotFoundException("Not found UserId " + id.toString());
         }
-        return null;
+        UserEntity userEntity = optionalUser.get();
+        userEntity.setFullName(updateUserDto.getFullName());
+        userEntity.setPhoneNumber(updateUserDto.getPhoneNumber());
+        userEntity.setAddress(updateUserDto.getAddress());
+        userEntity.setUpdatedAt(Instant.now());
+        this.userRepository.save(userEntity);
+        return new UserDto(userEntity);
     }
 
     public UserDto handleDeleteUserById(UUID id) {
