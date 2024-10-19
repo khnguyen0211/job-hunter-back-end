@@ -3,10 +3,14 @@ package com.project.hunter.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.project.hunter.domain.dto.companies.CompanyDto;
 import com.project.hunter.domain.dto.companies.CreateCompanyDto;
+import com.project.hunter.domain.dto.pagination.MetaData;
+import com.project.hunter.domain.dto.pagination.PageResult;
 import com.project.hunter.domain.entities.CompanyEntity;
 import com.project.hunter.repositories.CompanyRepository;
 
@@ -27,10 +31,14 @@ public class CompanyService {
         return new CompanyDto(this.companyRepository.save(companyEntity));
     }
 
-    public List<CompanyDto> handleGetAllCompany() {
-        List<CompanyEntity> companyEntities = this.companyRepository.findAll();
-        return companyEntities.stream().map(companyEntity -> new CompanyDto(companyEntity))
-                .collect(Collectors.toList());
+    public PageResult<CompanyDto> handleGetAllCompany(Pageable pageable) {
+        Page<CompanyEntity> pageCompany = this.companyRepository.findAll(pageable);
+        MetaData meta = new MetaData(pageCompany.getNumber() + 1, pageCompany.getSize(),
+                pageCompany.getTotalPages(), pageCompany.getTotalElements());
+        List<CompanyDto> companyDtoList = pageCompany.getContent().stream()
+                .map(companyEntity -> new CompanyDto(companyEntity)).collect(Collectors.toList());
+        PageResult<CompanyDto> pageResultCompany = new PageResult<>(meta, companyDtoList);
+        return pageResultCompany;
     }
 
 }
