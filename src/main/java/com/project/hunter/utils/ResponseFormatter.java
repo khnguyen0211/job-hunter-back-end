@@ -17,24 +17,29 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ResponseFormatter implements ResponseBodyAdvice<Object> {
 
     @Override
-    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(MethodParameter returnType,
+            Class<? extends HttpMessageConverter<?>> converterType) {
         return true;
     }
 
     @Override
-    public Object beforeBodyWrite(
-            Object body,
-            MethodParameter returnType,
+    public Object beforeBodyWrite(Object body, MethodParameter returnType,
             MediaType selectedContentType,
             Class<? extends HttpMessageConverter<?>> selectedConverterType,
-            ServerHttpRequest request,
-            ServerHttpResponse response) {
-        //catch type ServerHttpResponse -> ServletServerHttpResponse
+            ServerHttpRequest request, ServerHttpResponse response) {
+        // catch type ServerHttpResponse -> ServletServerHttpResponse
         ServletServerHttpResponse servletServerHttpResponse = (ServletServerHttpResponse) response;
-        //get httpServletResponse
+        // get httpServletResponse
         HttpServletResponse httpServletResponse = servletServerHttpResponse.getServletResponse();
         int statusCode = httpServletResponse.getStatus();
-        if (statusCode >= 400) { //case error
+        String path = request.getURI().getPath();
+        if (path.startsWith("/v3/api-docs") 
+        || path.startsWith("/swagger-ui")
+        || body instanceof String
+        ) {
+            return body;
+        }
+        if (statusCode >= 400) { // case error
             return body;
         }
         return new RestResponse<>(statusCode, "Call API successfully", body, null);
