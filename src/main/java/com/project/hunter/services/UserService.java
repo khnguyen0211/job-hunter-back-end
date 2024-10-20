@@ -23,7 +23,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDto handleSaveUser(UserEntity userEntity) {
+    public UserDto handleSaveUser(UserEntity userEntity) throws NotFoundException {
         UserDto userDto = this.handleGetUserByEmail(userEntity.getEmail());
         if (userDto != null) {
             return null;
@@ -72,13 +72,13 @@ public class UserService {
         return null;
     }
 
-    public UserDto handleGetUserByEmail(String email) {
+    public UserDto handleGetUserByEmail(String email) throws NotFoundException {
         List<UserEntity> userEntities = this.userRepository.findByEmail(email);
-        if (userEntities != null && !userEntities.isEmpty()) {
-            UserEntity userEntity = userEntities.get(0);
-            return new UserDto(userEntity);
+        if (userEntities == null || userEntities.isEmpty()) {
+            throw new NotFoundException("Not found user email: " + email);
         }
-        return null;
+        UserEntity userEntity = userEntities.get(0);
+        return new UserDto(userEntity);
     }
 
     public UserEntity handleGetUserLoginByEmail(String email) {

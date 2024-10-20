@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<UserDto> createUserAPI(@RequestBody UserEntity userEntity) {
+    public ResponseEntity<UserDto> createUserAPI(@RequestBody UserEntity userEntity) throws NotFoundException{
         userEntity.setPassword(this.passwordEncoder.encode(userEntity.getPassword()));
         UserDto userDto = this.userService.handleSaveUser(userEntity);
         return ResponseEntity.status(201).body(userDto);

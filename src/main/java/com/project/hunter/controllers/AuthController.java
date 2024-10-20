@@ -1,5 +1,7 @@
 package com.project.hunter.controllers;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -8,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.hunter.domain.dto.auth.LoginDto;
 import com.project.hunter.domain.dto.auth.LoginResponseDto;
 import com.project.hunter.domain.dto.users.UserDto;
+import com.project.hunter.exceptions.NotFoundException;
 import com.project.hunter.services.AuthService;
 import com.project.hunter.services.UserService;
 
 import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -40,7 +45,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> loginApi(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<LoginResponseDto> loginApi(@Valid @RequestBody LoginDto loginDto)
+            throws NotFoundException {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUsername(),
                         loginDto.getPassword());
@@ -48,7 +54,6 @@ public class AuthController {
                 authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         // add user to security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         // get user dto
         UserDto userDto = this.userService.handleGetUserByEmail(loginDto.getUsername());
         // create access & refresh token
@@ -58,19 +63,23 @@ public class AuthController {
         this.userService.handleUpdateRefreshToken(userDto.getId(), refreshToken);
         // pass refresh_token into cookie
         System.out.println(refreshTokenExpiration);
-        ResponseCookie responseCookie = ResponseCookie
-                .from("refresh_token", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(refreshTokenExpiration)
-                .build();
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true).secure(true).path("/").maxAge(refreshTokenExpiration).build();
         // create object dto for api response
         LoginResponseDto loginResponseDto = new LoginResponseDto(userDto, accessToken);
-
-        return ResponseEntity.ok()
-                            .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                            .body(loginResponseDto);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .body(loginResponseDto);
     }
+
+    @GetMapping("me")
+    public ResponseEntity<UserDto> getMeApi() throws NotFoundException {
+        if (AuthService.getCurrentUserLogin().isPresent()) {
+            String id = AuthService.getCurrentUserLogin().get();
+            UserDto userDto = this.userService.handleGetUserById(UUID.fromString(id));
+            return ResponseEntity.ok().body(userDto);
+        }
+        return null;
+    }
+
 
 }
