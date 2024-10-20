@@ -23,7 +23,7 @@ import com.project.hunter.services.UserService;
 import com.project.hunter.utils.UUIDChecker;
 
 @RestController()
-@RequestMapping("users")
+@RequestMapping("api/v1/users")
 public class UserController {
 
     private final UserService userService;

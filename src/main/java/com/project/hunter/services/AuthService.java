@@ -17,24 +17,50 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.project.hunter.configs.JwtConfiguration;
+import com.project.hunter.domain.dto.users.UserDto;
 
 @Service
 public class AuthService {
     private final JwtEncoder jwtEncoder;
 
     @Value("${job-hunter.jwt.access-token-expiration}")
-    private long jwtExpiration;
+    private long accessTokenExpiration;
+
+    @Value("${job-hunter.jwt.refresh-token-expiration}")
+    private long refreshTokenExpiration;
 
     public AuthService(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(UserDto userDto) {
         Instant now = Instant.now();
-        Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
 
-        JwtClaimsSet claims = JwtClaimsSet.builder().issuedAt(now).expiresAt(validity)
-                .subject(authentication.getName()).claim("kh-nguyen0211", authentication).build();
+        JwtClaimsSet claims = JwtClaimsSet
+                                    .builder()
+                                    .subject(userDto.getId().toString())
+                                    .issuedAt(now)
+                                    .expiresAt(validity)
+                                    .claim("user", userDto)
+                                    .build();
+
+        JwsHeader jwsHeader = JwsHeader.with(JwtConfiguration.JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+
+    }
+
+    public String createRefreshToken(UserDto userDto) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+
+        JwtClaimsSet claims = JwtClaimsSet
+                                .builder()
+                                .issuedAt(now)
+                                .expiresAt(validity)
+                                .subject(userDto.getId().toString())
+                                .claim("user", userDto)
+                                .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JwtConfiguration.JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();

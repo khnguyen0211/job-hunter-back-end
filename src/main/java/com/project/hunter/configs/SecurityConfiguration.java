@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                         throws Exception {
                 http.csrf(c -> c.disable()).cors(Customizer.withDefaults())
                                 .authorizeHttpRequests(authz -> authz
-                                                .requestMatchers("/", "/auth/login").permitAll()
+                                                .requestMatchers("/", "/api/v1/auth/login").permitAll()
                                                 .requestMatchers("/v3/api-docs/**",
                                                                 "/swagger-ui/**",
                                                                 "/swagger-ui.html")

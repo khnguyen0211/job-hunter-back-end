@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.project.hunter.constants.GenderEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,6 +27,8 @@ public class UserEntity {
     private String password;
     private String address;
     private String phoneNumber;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
     
     @Enumerated(EnumType.STRING)

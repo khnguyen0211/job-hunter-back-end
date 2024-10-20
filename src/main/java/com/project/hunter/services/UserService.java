@@ -46,7 +46,8 @@ public class UserService {
         return null;
     }
 
-    public UserDto handleUpdateUserById(UUID id, UpdateUserDto updateUserDto) throws NotFoundException{
+    public UserDto handleUpdateUserById(UUID id, UpdateUserDto updateUserDto)
+            throws NotFoundException {
         Optional<UserEntity> optionalUser = this.userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             throw new NotFoundException("Not found UserId " + id.toString());
@@ -89,4 +90,12 @@ public class UserService {
         return null;
     }
 
+    public void handleUpdateRefreshToken(UUID id, String refreshToken) {
+        Optional<UserEntity> optionalUser = this.userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            UserEntity userEntity = optionalUser.get();
+            userEntity.setRefreshToken(refreshToken);
+            this.userRepository.save(userEntity);
+        }
+    }
 }
