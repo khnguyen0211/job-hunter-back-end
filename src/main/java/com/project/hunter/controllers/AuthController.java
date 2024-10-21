@@ -10,6 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,7 @@ import com.project.hunter.services.AuthService;
 import com.project.hunter.services.UserService;
 
 import jakarta.validation.Valid;
+
 
 
 @RestController
@@ -79,6 +82,17 @@ public class AuthController {
             return ResponseEntity.ok().body(userDto);
         }
         return null;
+    }
+
+    @GetMapping("refresh")
+    public ResponseEntity<UserDto> getRefreshToken(
+            @CookieValue(name = "refresh_token") String refreshToken) {
+        Jwt jwtDecoded = this.authService.isValidToken(refreshToken);
+        String userId = jwtDecoded.getSubject();
+
+        UserDto userDto = this.userService
+                .handleFindUserByIdAndRefreshToken(UUID.fromString(userId), refreshToken);
+        return ResponseEntity.ok().body(userDto);
     }
 
 

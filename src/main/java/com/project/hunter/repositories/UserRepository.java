@@ -12,4 +12,5 @@ import com.project.hunter.domain.entities.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID>{
     List<UserEntity> findByEmail(String email);
-}
+    List<UserEntity> findByIdAndRefreshToken(UUID id, String refreshToken);
+};
