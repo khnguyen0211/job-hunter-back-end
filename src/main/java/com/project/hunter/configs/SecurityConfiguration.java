@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                                                 .requestMatchers("/v3/api-docs/**",
                                                                 "/swagger-ui/**",
                                                                 "/swagger-ui.html")
-                                                .permitAll().anyRequest().authenticated())
+                                                .permitAll().anyRequest().permitAll())
                                 .oauth2ResourceServer((oauth2) -> oauth2
                                                 .jwt(Customizer.withDefaults())
                                                 .authenticationEntryPoint(
