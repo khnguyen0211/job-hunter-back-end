@@ -84,7 +84,7 @@ public class AuthService {
         return null;
     }
 
-    public Jwt isValidToken(String token) {
+    public Jwt decodeToken(String token) {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(getSecretKey())
                 .macAlgorithm(JwtConfiguration.JWT_ALGORITHM).build();
         try {
