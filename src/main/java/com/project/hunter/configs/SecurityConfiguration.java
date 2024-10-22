@@ -27,11 +27,13 @@ public class SecurityConfiguration {
                         throws Exception {
                 http.csrf(c -> c.disable()).cors(Customizer.withDefaults())
                                 .authorizeHttpRequests(authz -> authz
-                                                .requestMatchers("/", "/api/v1/auth/login").permitAll()
+                                                .requestMatchers("/", "/api/v1/auth/login", 
+                                                                "/api/v1/auth/refresh").permitAll()
                                                 .requestMatchers("/v3/api-docs/**",
                                                                 "/swagger-ui/**",
                                                                 "/swagger-ui.html")
-                                                .permitAll().anyRequest().authenticated())
+                                                .permitAll()
+                                                .anyRequest().authenticated())
                                 .oauth2ResourceServer((oauth2) -> oauth2
                                                 .jwt(Customizer.withDefaults())
                                                 .authenticationEntryPoint(

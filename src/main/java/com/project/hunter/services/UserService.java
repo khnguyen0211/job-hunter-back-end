@@ -98,4 +98,13 @@ public class UserService {
             this.userRepository.save(userEntity);
         }
     }
+
+    public UserDto handleFindUserByIdAndRefreshToken(UUID id, String refreshToken) {
+        List<UserEntity> userEntities = this.userRepository.findByIdAndRefreshToken(id, refreshToken);
+        if (userEntities != null && !userEntities.isEmpty()) {
+            UserEntity userEntity = userEntities.get(0);
+            return new UserDto(userEntity);
+        }
+        return null;
+    }
 }
